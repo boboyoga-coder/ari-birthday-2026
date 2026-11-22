@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday ARI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,400&display=swap">
+<style>
+:root{--bg:#ffd6e0;--ink:#8a4a5c;--cream:#fff6dc;--cake:#a77b6b;--cake-dark:#86594d;--flame:#ffc13b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#f7c3d1;--ink:#6e3447}}
+:root[data-theme="dark"]{--bg:#f7c3d1;--ink:#6e3447}
+html,body{height:100%;margin:0}
+body{background:var(--bg);font-family:'Lato',Georgia,serif;font-style:italic;color:var(--ink);
+display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
+-webkit-tap-highlight-color:transparent;cursor:pointer;user-select:none}
+.hint{position:absolute;top:9%;width:84%;max-width:420px;text-align:center;font-size:1.2rem;line-height:1.4;letter-spacing:.03em;opacity:.8;transition:opacity .5s}
+.out .hint{opacity:0}
+#cake{position:relative;width:min(300px,78vw);height:150px;margin-top:40px}
+.layer{position:absolute;left:0;right:0;background:var(--cake);border-radius:6px 6px 10px 10px}
+.l1{top:34px;height:110px}
+.stripe{position:absolute;left:0;right:0;height:14px;background:var(--cake-dark)}
+.s1{top:62px}.s2{top:104px}
+.icing{position:absolute;top:22px;left:-4px;right:-4px;height:30px;background:var(--cream);border-radius:16px 16px 8px 8px}
+.drip{position:absolute;top:44px;width:12px;background:var(--cream);border-radius:0 0 8px 8px}
+.d1{left:10%;height:56px}.d2{left:38%;height:34px}.d3{left:62%;height:24px}.d4{left:88%;height:42px}
+.plate{position:absolute;bottom:-6px;left:-12%;right:-12%;height:5px;background:var(--cream);border-radius:3px}
+.candle{position:absolute;top:-18px;width:6px;height:44px;border-radius:2px;
+background:repeating-linear-gradient(var(--cream) 0 6px,#fff 6px 12px)}
+.fuego{position:absolute;top:-22px;left:50%;margin-left:-4px;width:8px;height:18px;border-radius:50%;
+background:radial-gradient(ellipse at 50% 70%,#fff3b0 0,var(--flame) 45%,#ff8a2b 100%);
+box-shadow:0 0 14px 4px rgba(255,193,59,.55);opacity:1;transition:opacity .5s;
+transform:translateZ(0);backface-visibility:hidden;animation:flick .35s ease-in-out infinite alternate}
+.out .fuego{opacity:0}
+@keyframes flick{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.88,1.12) rotate(3deg)}}
+.wish{position:absolute;bottom:16%;text-align:center;font-size:2rem;line-height:1.3}
+.wish b{font-weight:400;font-size:2.4rem;letter-spacing:.08em}
+canvas{position:fixed;inset:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.fuego{animation:none}}
+</style>
+</head>
+<body>
+<div class="hint">huslee shiwneed delgets deeree daraad uleegeerei</div>
+<div id="cake" aria-label="Birthday cake with candles">
+  <div class="layer l1"></div>
+  <div class="stripe s1"></div><div class="stripe s2"></div>
+  <div class="icing"></div>
+  <div class="drip d1"></div><div class="drip d2"></div><div class="drip d3"></div><div class="drip d4"></div>
+  <div class="plate"></div>
+</div>
+<div class="wish">Happy Birthday!<br><b>ARI</b><br>-puntsgaas</div>
+<canvas id="c"></canvas>
+<script>
+(function(){
+var cake=document.getElementById('cake'),n=19;
+for(var i=0;i<n;i++){
+  var x=(8+i*(84/(n-1)))+'%';
+  var c=document.createElement('div');c.className='candle';c.style.left='calc('+x+' - 3px)';
+  var f=document.createElement('div');f.className='fuego';f.style.animationDelay=(i*0.07)+'s';
+  c.appendChild(f);cake.appendChild(c);
+}
+var cv=document.getElementById('c'),ctx=cv.getContext('2d'),parts=[],running=false;
+function size(){cv.width=innerWidth;cv.height=innerHeight}
+size();addEventListener('resize',size);
+var cols=['#ff2d55','#ffd60a','#30d158','#0a84ff','#bf5af2','#ff9f0a','#64d2ff'];
+function burst(){
+  for(var i=0;i<140;i++)parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,
+    w:5+Math.random()*7,h:5+Math.random()*9,vx:(Math.random()-.5)*2,vy:2+Math.random()*3.5,
+    r:Math.random()*6,vr:(Math.random()-.5)*.25,c:cols[(Math.random()*cols.length)|0]});
+  if(!running){running=true;requestAnimationFrame(tick)}
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(function(p){return p.y<cv.height+30});
+  parts.forEach(function(p){
+    p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;
+    ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+  });
+  if(parts.length)requestAnimationFrame(tick);else running=false;
+}
+var ac=null;
+function song(){
+  try{
+    ac=new (window.AudioContext||window.webkitAudioContext)();
+    var N={C:261.63,D:293.66,E:329.63,F:349.23,G:392,A:440,B:466.16,H:523.25};
+    var s=[['C',.75],['C',.25],['D',1],['C',1],['F',1],['E',2],['C',.75],['C',.25],['D',1],['C',1],['G',1],['F',2],['C',.75],['C',.25],['H',1],['A',1],['F',1],['E',1],['D',1],['B',.75],['B',.25],['A',1],['F',1],['G',1],['F',2]];
+    var t=ac.currentTime+.1,beat=.42;
+    s.forEach(function(n){
+      var o=ac.createOscillator(),g=ac.createGain();
+      o.type='triangle';o.frequency.value=N[n[0]];
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.03);
+      g.gain.exponentialRampToValueAtTime(.001,t+n[1]*beat);
+      o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+n[1]*beat);
+      t+=n[1]*beat;
+    });
+  }catch(e){}
+}
+function stopSong(){try{if(ac)ac.close();}catch(e){}ac=null}
+var out=false;
+document.body.addEventListener('click',function(){
+  out=!out;
+  document.body.classList.toggle('out',out);
+  if(out){setTimeout(burst,300);song();}else stopSong();
+});
+})();
+</script>
+</body>
+</html>
